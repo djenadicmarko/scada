@@ -1,0 +1,7 @@
+STA 110
+TCP 59000
+
+
+IN_REG	3 3300	0  0   4095  2000  AI  @Senzori 4
+HR_INT  2 3500  0  0   4095  1200  AO  @KlimaBojler 4
+DO_REG  6 4000  0  0      1     0  DO  @Prozori 2
