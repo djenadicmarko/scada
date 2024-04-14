@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Modbus.ModbusFunctions
 {
@@ -24,15 +25,21 @@ namespace Modbus.ModbusFunctions
         /// <inheritdoc/>
         public override byte[] PackRequest()
         {
+            ModbusReadCommandParameters parameters = CommandParameters as ModbusReadCommandParameters;
             byte[] bytes = new byte[12];
 
-            Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)CommandParameters.TransactionId)), 0, bytes, 0, 2);
-            Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)CommandParameters.ProtocolId)), 0, bytes, 2, 2);
-            Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)CommandParameters.Length)), 0, bytes, 4, 2);
-            bytes[6] = CommandParameters.UnitId;
-            bytes[7] = CommandParameters.FunctionCode;
-            Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)((ModbusReadCommandParameters)CommandParameters).StartAddress)), 0, bytes, 8, 2);
-            Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)((ModbusReadCommandParameters)CommandParameters).Quantity)), 0, bytes, 10, 2);
+            bytes[0] = BitConverter.GetBytes(parameters.TransactionId)[1];
+            bytes[1] = BitConverter.GetBytes(parameters.TransactionId)[0];
+            bytes[2] = BitConverter.GetBytes(parameters.ProtocolId)[1];
+            bytes[3] = BitConverter.GetBytes(parameters.ProtocolId)[0];
+            bytes[4] = BitConverter.GetBytes(parameters.Length)[1];
+            bytes[5] = BitConverter.GetBytes(parameters.Length)[0];
+            bytes[6] = parameters.UnitId;
+            bytes[7] = parameters.FunctionCode;
+            bytes[8] = BitConverter.GetBytes(parameters.StartAddress)[1];
+            bytes[9] = BitConverter.GetBytes(parameters.StartAddress)[0];
+            bytes[10] = BitConverter.GetBytes(parameters.Quantity)[1];
+            bytes[11] = BitConverter.GetBytes(parameters.Quantity)[0];
 
             return bytes;
         }
